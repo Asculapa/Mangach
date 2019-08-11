@@ -1,6 +1,6 @@
 package com.shakal.sources;
 
-public class MangaName {
+public final class MangaName {
     private String rus;
     private String eng;
 

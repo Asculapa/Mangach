@@ -12,7 +12,15 @@ public class Mangalib extends Site {
         return 0;
     }
 
-    public int getChapterSize(int volume) {
+    public int getChaptersCount(int volume) {
+        return 0;
+    }
+
+    public int getChaptersCount() {
+        return 0;
+    }
+
+    public int getChapterSize(int volume, int chapter) {
         return 0;
     }
 
@@ -24,11 +32,11 @@ public class Mangalib extends Site {
         return null;
     }
 
-    public String getChapterName(int chapter) {
+    public String getChapterName(int volume, int chapter) {
         return null;
     }
 
-    public File getImage(int volume, int page) {
+    public File getImage(int volume, int chapter, int page) {
         return null;
     }
 }

@@ -4,9 +4,11 @@ import java.io.File;
 
 public interface ParseSite {
     int getVolumesCount();
-    int getChapterSize(int volume);
+    int getChaptersCount(int volume);
+    int getChaptersCount();
+    int getChapterSize(int volume, int chapter);
     String getMangaName();
     String getVolumeName(int volume);
-    String getChapterName(int chapter);
-    File getImage(int volume, int page);
+    String getChapterName(int volume, int chapter);
+    File getImage(int volume, int chapter, int page);
 }
