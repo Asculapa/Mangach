@@ -11,7 +11,7 @@ import java.net.URL;
 public abstract class Site implements ParseSite {
     protected URL url;
     protected Document document;
-    // Уаааааа-аааа, нужно менять jsoup -> HtmlUnit, ибо он не поддерживает js(
+
     protected Site(URL url) throws IncorrectURL {
         this.url = url;
         document = connect(url);
@@ -23,6 +23,7 @@ public abstract class Site implements ParseSite {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         throw new IncorrectURL(url.toString() + " is incorrect!");
     }
 }

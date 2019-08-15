@@ -14,4 +14,14 @@ public class Utils {
         }
         return integers;
     }
+
+    public static ArrayList<String> parseString(String reg, String s) {
+        ArrayList<String> list = new ArrayList<String>();
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(s);
+        while (matcher.find()) {
+            list.add(matcher.group());
+        }
+        return list;
+    }
 }
