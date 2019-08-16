@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void sss(String[] args) {
         File[] f = {new File("C:\\Users\\nadto\\Desktop\\014.png"),
                 new File("C:\\Users\\nadto\\Desktop\\017.png"),
                 new File("C:\\Users\\nadto\\Desktop\\018.png")};
@@ -29,7 +29,7 @@ public class Main {
             // url.getProtocol() + :// url.getHost() + url.getPath()
             // url.toString() - https://mangalib.me/happily-ever-after
             // (\\/{1})
-            Mangalib mangalib = new Mangalib(new URL("https://mangalib.me/mahou-shoujo-site"));
+            Mangalib mangalib = new Mangalib(new URL("https://mangalib.me/nakahara-kun-no-kahogo-na-imouto"));
             // ArrayList<Integer> integers = new ArrayList<Integer>();
             // Pattern pattern = Pattern.compile("([{].+?[}])");
             //Pattern pattern = Pattern.compile("\"p\":\\d+");
@@ -48,16 +48,16 @@ public class Main {
              System.out.println("В 1 томе 1 главы - " + mangalib.getChapterSize(1,1) + " страниц");
              System.out.println("Название мнги - " + mangalib.getMangaName(ParseSite.Language.RUS) + "  ==== " + mangalib.getMangaName(ParseSite.Language.ENG));
              System.out.println("Название 31 главы - " + mangalib.getChapterName(1, 31));*/
-             PDFUtils.imagesToPDF(mangalib.getImages(1,30)).save("test2.pdf");
-             PDFUtils.imagesToPDF(mangalib.getImages(1,31)).save("test3.pdf");
+            // PDFUtils.imagesToPDF(mangalib.getImages(1,30)).save("test2.pdf");
+            // PDFUtils.imagesToPDF(mangalib.getImages(1,31)).save("test3.pdf");
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (ParseError parseError) {
-            parseError.printStackTrace();
         } catch (IncorrectURL incorrectURL) {
             incorrectURL.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ParseError parseError) {
+            parseError.printStackTrace();
         }
     }
 }

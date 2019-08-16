@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,9 +24,12 @@ public class Mangalib extends Site {
     private ArrayList<int[]> volAndChap;
     private HashMap<Integer, String> chapName;
 
-    public Mangalib(URL url) throws IncorrectURL {
-        // Не пускать далее, если не верный url или нет доступа к сайту или нет глав
+    public Mangalib(URL url) throws IncorrectURL, ParseError {
         super(url);
+        Elements elements = document.getElementsByClass("empty nf");
+        if (!elements.isEmpty()) {
+            throw new ParseError(elements.text());
+        }
         setVolumesAndChapters();
     }
 
