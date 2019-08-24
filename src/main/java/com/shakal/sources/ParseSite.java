@@ -10,7 +10,7 @@ public interface ParseSite {
         ENG
     }
 
-    int getVolumesCount() throws ParseError;
+  /*  int getVolumesCount() throws ParseError;
 
     int getChaptersCount(int volume) throws Exception;
 
@@ -22,5 +22,5 @@ public interface ParseSite {
 
     String getChapterName(int volume, int chapter) throws ParseError;
 
-    ArrayList<BufferedImage> getImages(int volume, int chapter) throws Exception;
+    ArrayList<BufferedImage> getImages(int volume, int chapter) throws Exception;*/
 }

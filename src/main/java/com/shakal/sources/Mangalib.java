@@ -2,6 +2,8 @@ package com.shakal.sources;
 
 import com.shakal.exceptions.IncorrectURL;
 import com.shakal.exceptions.ParseError;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -10,19 +12,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.shakal.sources.Utils.getIntsFromStr;
-
 public class Mangalib extends Site {
 
-    private ArrayList<int[]> volAndChap;
-    private HashMap<Integer, String> chapName;
 
     public Mangalib(URL url) throws IncorrectURL, ParseError {
         super(url);
@@ -30,38 +26,65 @@ public class Mangalib extends Site {
         if (!elements.isEmpty()) {
             throw new ParseError(elements.text());
         }
-        setVolumesAndChapters();
-    }
-
-
-    public int getVolumesCount() {
-        return volAndChap.get(0)[0];
-    }
-
-    public int getChaptersCount(int volume) throws Exception {
-        if (volume > getVolumesCount()) {
-            throw new Exception("Incorrect volume");
+        setVolsAndUrls();
+        for (Chapter chapter : chapters) {
+            System.out.println(chapter.getVolAndChap() + " - " + chapter.getName() + " URL - " + chapter.getUrl());
         }
-
-        int chapteCount = 0;
-        for (int[] arr : volAndChap) {
-            if (arr[0] == volume) {
-                chapteCount++;
-            }
-        }
-        return chapteCount;
     }
 
-    public int getChaptersCount() {
-        return volAndChap.get(0)[1];
+    private void setVolsAndUrls() {
+        Elements chapList = document
+                .getElementsByClass("chapters-list")
+                .first()
+                .getElementsByClass("chapter-item");
+        for (Element element : chapList) {
+            Chapter chapter = new Chapter();
+            Element infoElement = element
+                    .getElementsByClass("chapter-item__name")
+                    .first()
+                    .getElementsByClass("link-default")
+                    .first();
+            chapter.setName(infoElement.attr("title"));
+            chapter.setVolAndChap(infoElement.ownText());
+            chapter.setUrl(infoElement.attr("href"));
+            chapters.add(chapter);
+        }
     }
 
-    public int getChapterSize(int volume, int chapter) throws ParseError {
-        ArrayList<String> pages = getStringsWithPages(volume, chapter);
-        if (pages != null) {
-            return pages.size();
+    public ArrayList<BufferedImage> getImages(String conn) throws ParseError, IOException {
+        ArrayList<String> pages = getStringsWithPages(conn);
+        if (pages == null) {
+            throw new ParseError("Can't get images");
         }
-        throw new ParseError("Unknown chapter size");
+        ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+        Map<Integer, String> urls = getPagesAndUrls(pages);
+        String chapterUrl = getChapUrl(conn);
+
+        for (String pageUrl : urls.values()) {
+            String url = "https://img3.mangalib.me" + chapterUrl + "/" + pageUrl;
+            System.out.println(url);
+            URL imgUrl = new URL(url);
+            BufferedImage img = ImageIO.read(imgUrl);
+            images.add(img);
+        }
+        return images;
+    }
+
+    private Map<Integer, String> getPagesAndUrls(ArrayList<String> pages) {
+        Map<Integer, String> urls = new TreeMap<Integer, String>();
+        String pageRgex = "\"p\":";
+        String urlRgex = "\"u\":.+";
+
+        // Не умею использовать регулярные выражения =(
+        for (String str : pages) {
+            System.out.println(str);
+            int page = Integer.parseInt(Utils.parseString(pageRgex + "\\d+", str).get(0).substring(pageRgex.length()));
+            String url = Utils.parseString(urlRgex, str).get(0);
+            url = url.substring(urlRgex.length() - 1, url.length() - 2);
+            System.out.println("key - " + page + " value - " + url);
+            urls.put(page, url);
+        }
+        return urls;
     }
 
     public String getMangaName(Language language) {
@@ -78,59 +101,42 @@ public class Mangalib extends Site {
         return "";
     }
 
-    public String getChapterName(int volume, int chapter) {
-        return chapName.get(chapter);
+
+    private ArrayList<String> getStringsWithPages(String conn) {
+        Document document = getDocument(conn);
+        if (document == null) {
+            return null;
+        }
+
+        Element element = document
+                .getElementsByClass("reader-next hidden")
+                .first().getElementById("pg");
+        return Utils.parseString("([{].+?[}])", element.html());
     }
 
+    private String getChapUrl(String conn) throws ParseError {
+        Document document = getDocument(conn);
+        Elements elements = document.head().getElementsByTag("script");
 
-    public ArrayList<BufferedImage> getImages(int volume, int chapter) throws ParseError, IOException {
-        ArrayList<String> pages = getStringsWithPages(volume, chapter);
-        ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
-        Map<Integer, String> urls = new TreeMap<Integer, String>();
-        String pageRgex = "\"p\":";
-        String urlRgex = "\"u\":.+";
-        if (pages == null) {
-            throw new ParseError("Can't get images");
-        }
-        // Не умею использовать регулярные выражения =(
-        for (String str : pages) {
-            System.out.println(str);
-            int page = Integer.parseInt(Utils.parseString(pageRgex + "\\d+", str).get(0).substring(pageRgex.length()));
-            String url = Utils.parseString(urlRgex, str).get(0);
-            url = url.substring(urlRgex.length() - 1, url.length() - 2);
-            System.out.println("key - " + page + " value - " + url);
-            urls.put(page, url);
-        }
-        for (Integer page: urls.keySet()){
-            String url = "https://img3.mangalib.me/manga" + this.url.getPath() + "/chapters/" + volume + "-" + chapter + "/" + urls.get(page);
-            System.out.println(url);
-            URL imgUrl = new URL(url);
-            BufferedImage img = ImageIO.read(imgUrl);
-            images.add(img);
-        }
-        return images;
-    }
-
-
-    private void setVolumesAndChapters() {
-        Elements elements = document.body().getElementsByClass("chapter-item");
-        volAndChap = new ArrayList<int[]>();
-        chapName = new HashMap<Integer, String>();
-        ArrayList<Integer> volumesAndChapters;
-        String chapterName;
         for (Element element : elements) {
-            volumesAndChapters = getIntsFromStr(element.getElementsByClass("link-default").text());
-            int[] arr = new int[2];
-            arr[0] = volumesAndChapters.get(0);
-            arr[1] = volumesAndChapters.get(1);
-            chapterName = element.getElementsByClass("link-default").attr("title");
-            volAndChap.add(arr);
-            chapName.put(arr[1], chapterName);
+            if (element.html().contains("window.__info")) {
+                ArrayList<String> list = Utils.parseString("([{].+[}])", element.html());
+                if (list.size() == 1) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(list.get(0));
+                        return jsonObject.get("imgUrl").toString();
+                    } catch (JSONException ex) {
+                        throw new ParseError("Can't convert " + list.get(0) + " to JSON");
+                    }
+                } else {
+                    throw new ParseError("Incorrect script parse!");
+                }
+            }
         }
+        throw new ParseError("Script not found!");
     }
 
-    private ArrayList<String> getStringsWithPages(int volume, int chapter) {
-        String conn = this.url.getProtocol() + "://" + url.getHost() + url.getPath() + "/v" + volume + "/c" + chapter;
+    private Document getDocument(String conn) {
         URL url;
         Document document = null;
         try {
@@ -141,13 +147,6 @@ public class Mangalib extends Site {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        if (document == null) {
-            return null;
-        }
-        Element element = document
-                .getElementsByClass("reader-next hidden")
-                .first().getElementById("pg");
-        return Utils.parseString("([{].+?[}])", element.html());
+        return document;
     }
-
 }

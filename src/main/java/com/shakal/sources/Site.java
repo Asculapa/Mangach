@@ -10,17 +10,23 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public abstract class Site implements ParseSite {
     URL url;
     Document document;
+    ArrayList<Chapter> chapters;
+
 
     protected Site(URL url) throws IncorrectURL, ParseError {
         this.url = url;
-        if (!isSiteUp(url.getProtocol() + "://" + url.getHost())) {
+        chapters = new ArrayList<Chapter>();
+
+/*        if (!isSiteUp(url.getProtocol() + "://" + url.getHost())) {
             throw new ParseError("Site is down.");
-        }
+        }*/
         document = connect(url);
     }
 
@@ -31,10 +37,14 @@ public abstract class Site implements ParseSite {
             e.printStackTrace();
         }
 
-        throw new IncorrectURL(url.toString() + " is incorrect!");
+        throw new IncorrectURL(url.toString() + " is incorrect or site is down!");
     }
 
-    public static boolean isSiteUp(String site) {
+    public ArrayList<Chapter> getChapters() {
+        return chapters;
+    }
+
+    /*    public static boolean isSiteUp(String site) {
         try {
             URL url = new URL(site);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -49,5 +59,5 @@ public abstract class Site implements ParseSite {
             // You may decide on more specific behaviour...
             return false;
         }
-    }
+    }*/
 }

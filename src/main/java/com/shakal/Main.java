@@ -3,22 +3,17 @@ package com.shakal;
 import com.shakal.exceptions.IncorrectURL;
 import com.shakal.exceptions.ParseError;
 import com.shakal.sources.Mangalib;
-import com.shakal.sources.ParseSite;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
 
-    public static void sss(String[] args) {
-        File[] f = {new File("C:\\Users\\nadto\\Desktop\\014.png"),
-                new File("C:\\Users\\nadto\\Desktop\\017.png"),
-                new File("C:\\Users\\nadto\\Desktop\\018.png")};
-
+    public static void main(String[] args) {
+        //JSONObject jsonObject = new JSONObject("");
+        //System.out.print(jsonObject.get("imgUrl").toString().contains("chapters"));
         //PDFUtils.pngToPDDocument(f);
         try {
             // URL url = new URL("https://mangalib.me/quoc-vuong-van-tue/");
@@ -29,7 +24,8 @@ public class Main {
             // url.getProtocol() + :// url.getHost() + url.getPath()
             // url.toString() - https://mangalib.me/happily-ever-after
             // (\\/{1})
-            Mangalib mangalib = new Mangalib(new URL("https://mangalib.me/nakahara-kun-no-kahogo-na-imouto"));
+            Mangalib mangalib = new Mangalib(new URL("https://mangalib.me/mahou-shoujo-site"));
+            PDFUtils.imagesToPDF(mangalib.getImages(mangalib.getChapters().get(2).getUrl())).save("SuperTest.pdf");
             // ArrayList<Integer> integers = new ArrayList<Integer>();
             // Pattern pattern = Pattern.compile("([{].+?[}])");
             //Pattern pattern = Pattern.compile("\"p\":\\d+");
