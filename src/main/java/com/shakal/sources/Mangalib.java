@@ -29,6 +29,7 @@ public class Mangalib extends Site {
         setVolsAndUrls();
         for (Chapter chapter : chapters) {
             System.out.println(chapter.getVolAndChap() + " - " + chapter.getName() + " URL - " + chapter.getUrl());
+            System.out.println(chapter.getVolume());
         }
     }
 
@@ -44,6 +45,10 @@ public class Mangalib extends Site {
                     .first()
                     .getElementsByClass("link-default")
                     .first();
+            ArrayList<Integer> list = Utils.getIntsFromStr(infoElement.ownText());
+            if (list.size() != 0){
+                chapter.setVolume(list.get(0));
+            }
             chapter.setName(infoElement.attr("title"));
             chapter.setVolAndChap(infoElement.ownText());
             chapter.setUrl(infoElement.attr("href"));
@@ -61,7 +66,7 @@ public class Mangalib extends Site {
         String chapterUrl = getChapUrl(conn);
 
         for (String pageUrl : urls.values()) {
-            String url = "https://img3.mangalib.me" + chapterUrl + "/" + pageUrl;
+            String url = "https://img3.mangalib.me" + chapterUrl + pageUrl;
             System.out.println(url);
             URL imgUrl = new URL(url);
             BufferedImage img = ImageIO.read(imgUrl);

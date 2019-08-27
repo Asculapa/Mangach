@@ -11,7 +11,7 @@ import java.net.URL;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main() {
         //JSONObject jsonObject = new JSONObject("");
         //System.out.print(jsonObject.get("imgUrl").toString().contains("chapters"));
         //PDFUtils.pngToPDDocument(f);
@@ -26,6 +26,7 @@ public class Main {
             // (\\/{1})
             Mangalib mangalib = new Mangalib(new URL("https://mangalib.me/mahou-shoujo-site"));
             PDFUtils.imagesToPDF(mangalib.getImages(mangalib.getChapters().get(2).getUrl())).save("SuperTest.pdf");
+
             // ArrayList<Integer> integers = new ArrayList<Integer>();
             // Pattern pattern = Pattern.compile("([{].+?[}])");
             //Pattern pattern = Pattern.compile("\"p\":\\d+");
@@ -42,7 +43,7 @@ public class Main {
                 e.printStackTrace();
             }
              System.out.println("В 1 томе 1 главы - " + mangalib.getChapterSize(1,1) + " страниц");
-             System.out.println("Название мнги - " + mangalib.getMangaName(ParseSite.Language.RUS) + "  ==== " + mangalib.getMangaName(ParseSite.Language.ENG));
+             System.out.println("Название мнги - " + mangalib.getMangaName(ParseManga.Language.RUS) + "  ==== " + mangalib.getMangaName(ParseManga.Language.ENG));
              System.out.println("Название 31 главы - " + mangalib.getChapterName(1, 31));*/
             // PDFUtils.imagesToPDF(mangalib.getImages(1,30)).save("test2.pdf");
             // PDFUtils.imagesToPDF(mangalib.getImages(1,31)).save("test3.pdf");

@@ -1,9 +1,8 @@
 package com.shakal.sources;
 
-import java.net.URL;
-
 public class Chapter {
     private String volAndChap;
+    private int volume;
     private String name;
     private String url;
 
@@ -29,5 +28,18 @@ public class Chapter {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
+
+    @Override
+    public String toString() {
+        return volAndChap;
     }
 }

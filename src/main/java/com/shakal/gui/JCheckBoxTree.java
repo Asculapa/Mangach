@@ -4,10 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.EventListener;
-import java.util.EventObject;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -40,7 +37,7 @@ public class JCheckBoxTree extends JTree {
         }
     }
     HashMap<TreePath, CheckedNode> nodesCheckingState;
-    HashSet<TreePath> checkedPaths = new HashSet<TreePath>();
+    ArrayList<TreePath> checkedPaths = new ArrayList<TreePath>();
 
     // Defining a new event type for the checking mechanism and preparing event-handling mechanism
     protected EventListenerList listenerList = new EventListenerList();
@@ -92,7 +89,7 @@ public class JCheckBoxTree extends JTree {
 
     private void resetCheckingState() {
         nodesCheckingState = new HashMap<TreePath, CheckedNode>();
-        checkedPaths = new HashSet<TreePath>();
+        checkedPaths = new ArrayList<TreePath>();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)getModel().getRoot();
         if (node == null) {
             return;
@@ -175,6 +172,7 @@ public class JCheckBoxTree extends JTree {
                 // Firing the check change event
                 fireCheckChangeEvent(new CheckChangeEvent(new Object()));
                 // Repainting tree after the data structures were updated
+                System.out.println("Start");
                 selfPointer.repaint();
             }
             public void mouseEntered(MouseEvent arg0) {

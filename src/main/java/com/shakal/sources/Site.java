@@ -1,32 +1,23 @@
 package com.shakal.sources;
 
 import com.shakal.exceptions.IncorrectURL;
-import com.shakal.exceptions.ParseError;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
-public abstract class Site implements ParseSite {
+public abstract class Site implements ParseManga {
     URL url;
     Document document;
     ArrayList<Chapter> chapters;
 
 
-    protected Site(URL url) throws IncorrectURL, ParseError {
+    protected Site(URL url) throws IncorrectURL {
         this.url = url;
         chapters = new ArrayList<Chapter>();
-
-/*        if (!isSiteUp(url.getProtocol() + "://" + url.getHost())) {
-            throw new ParseError("Site is down.");
-        }*/
         document = connect(url);
     }
 
